@@ -1,0 +1,27 @@
+    Zadanie zinterpretowałem jako problem najkrótszych ścieżek i w celu rozwiązania go użyłem teorii grafów.
+Opis algorytmu:
+    Zbudowałem graf ważony(z krawędziami, które mają wagę) na podstawie gridu, połączone są tylko te wierzchołki,
+które są obok siebie. Dodałem również wierzchołki reprezentujące produkty i połączyłem je krawędzią z wierzchołkami,
+które byłyby "pod nimi w gridzie" tak aby np. do produktu na pozycji (2, 2) można było się dostać wyłącznie z pozycji (2, 2)
+na gridzie. Wagi krawędzi to czas przejścia z pozycji na pozycje (lub czas wyjmowania produktu, w przypadku wyjmowania produktu).
+Nie dodaję jako wierzchołki produktów, których aktualnie nie szukam. Gdy kilka takich samych szukanych produktów jest nad sobą,
+to dodaję ten, który jest najbliżej (ma najkrótszy czas wyciągnięcia).
+
+    Po zbudowaniu grafu znajduję najkrótszą drogę z punktu startowego do wszystkich pozycji, na których występuje produkt.
+Następnie dla każdej pozycji produktu liczę czas przejścia do stacji (znów najkrótsza ścieżka). Wybieram taką pozycję produktu,
+dla której łączny czas przejechania ze startu na pozycję, wyciągnięcia produktu i dojechania do stacji jest najmniejszy(wyciagnięcie produktu
+licze tylko raz). Jest to rozwiązanie problemu.
+
+Implementacja:
+    Do rozwiazania zadania(reprezentacja grafu i algorytm Dijkstry) użyłem biblioteki JGraphT(https://jgrapht.org).
+Graf reprezentowałem jako SimpleWeightedGraph i użyłem algorytmu DijkstraShortestPath. Zrezygnowałem z własnej implementacji
+grafu i algorytmu Dijkstry, ponieważ robiłem to w tamtym roku zdecydowanie za często, chciałem również poznać nową bilbiotekę
+w Javie(całkiem przyjemna).
+
+Złożoność czasowa rozwiązania:
+    Złożoność budowania grafu wynosi O(n), gdzie n to to ilość wierzchołków, a ilość wierzchołków ~ ilośc komórek grida.
+Jest tak, ponieważ każdy wierzchołek ma maksymalnie 5 krawędzi(4 sąsiadów i jeden produkt nad, bo nawet jak jest więcej produktów
+nad komórką to dodaję tylko ten, który miał najkrótszy czas wyciagnięcia(był najniżej)).
+Złożoność algorytmu Dijkstry, którego użyłem wynosi O(E*logn), gdzie E to ilość krawędzi. Każdy wierzchołek ma maksymalnie
+5 krawędzi, więc złożoność Dijkstry zmienia się na O(n*logn). Złożoność całego rozwiązania wynosi O(n^2*logn), ponieważ
+nad (prawie) każdą komórką grida może być produkt. W takim przypadku będziemy n razy wywoływać dijkstrę.

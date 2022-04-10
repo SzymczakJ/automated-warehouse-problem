@@ -1,0 +1,32 @@
+    Zamontowanie wielu stacji odbiorczych nie zmienia bardzo problemu. Całe zadanie rozwiązałbym w podobny sposób:
+
+Opis algorytmu(praktycznie przekopiowana z README):
+    Zbudowałem graf ważony(z krawędziami, które mają wagę) na podstawie gridu, połączone są tylko te wierzchołki,
+które są obok siebie. Dodałem również wierzchołki reprezentujące produkty i połączyłem je krawędzią z wierzchołkami,
+które byłyby "pod nimi w gridzie" tak aby np. do produktu na pozycji (2, 2) można było się dostać wyłącznie z pozycji (2, 2)
+na gridzie. Wagi krawędzi to czas przejścia z pozycji na pozycje (lub czas wyjmowania produktu, w przypadku wyjmowania produktu).
+Nie dodaję jako wierzchołki produktów, których aktualnie nie szukam. Gdy kilka takich samych szukanych produktów jest nad sobą,
+to dodaję ten, który jest najbliżej (ma najkrótszy czas wyciągnięcia).
+
+    (Zmiana w algorytmie!)
+    Po zbudowaniu grafu znajduję najkrótszą drogę z punktu startowego do wszystkich pozycji, na których występuje produkt.
+Następnie dla każdej pozycji produktu znajduję najkrótszą ścieżkę od produktu do wszystkich stacji osobno(Dijkstrę puszczam tylko raz, jednak
+wszystkie ścieżki obliczane są na raz) i od razu sprawdzam, czy nie znalazłem właśnie najkrótszej ścieżki, sprawdzając stacje po kolei.
+W taki sposób mogę wybrać taką pozycję produktu i taką stację, dla której łączny czas przejechania ze startu na pozycję,
+wyciągnięcia produktu i dojechania do stacji jest najmniejszy(wyciagnięcie produktu liczę tylko raz). Jest to rozwiązanie problemu.
+
+Implementacja:
+    Nadal zrobiłbym to zadanie przy pomocy biblioteki JGraphT(https://jgrapht.org). Graf znów reprezentowałbym jako
+SimpleWeightedGraph. Złożoność pozostaje taka sama więc nie zmieniam algorymu Dijkstry na inny(ten nadal jest najszybszy).
+
+Złożoność czasowa rozwiazania:
+    Złożoność zadania nadal pozostaje taka sama i wynosi O(n^2*logn) n-liczba wierzchołków, wprost proporcjonalna do liczby komórek gridu.
+Najpierw puszczamy Dijkstrę z pozycji startowej do wsztstkich wierzchołków z produktem co daje nam czas O(n*logn),
+jest tak dlatego, ponieważ ilość krawędzi wynosi O(n), ponieważ jeden wierzchołek może mieć maksymalnie 5 krawędzi wychodzących.
+(4 sąsiadów i jeden produkt nad, bo nawet jak jest więcej produktów nad komórką to dodaję tylko ten, który miał najkrótszy czas wyciagnięcia(był najniżej)).
+Następnie, dla każdego wierzchołka z produktem(pesymistycznie O(n) wierzchołków) wywołujemy Dijkstrę do wszystkich wierzchołków i od razu sprawdzamy,
+czy nie jest to najkrótsza droga(musimy sprawdzić wszystkie stacje co dodaje pesymistyczną złożoność O(n)). Łączna złożoność tych dwóch operacji to
+O(n*(n*log + n)) = O(n^2*logn). Całkowita złożoność algorytmu to O(n*logn + n^2*logn) = O(n^2*logn). Na poczatku również budujemy graf ale
+to nic nie zmienia, bo złożoność tej operacji wynosi O(n).
+
+Jak widać algorytm nie zmienił się tak bardzo.
